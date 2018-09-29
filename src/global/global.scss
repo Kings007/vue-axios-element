@@ -1,0 +1,25 @@
+/*
+ * 全局标签重置
+ */
+
+ * {
+    -webkit-tap-highlight-color: transparent;
+    outline: 0;
+  }
+  
+  body {
+    -webkit-font-smoothing: antialiased;
+    font-family: -apple-system, Helvetica, 'Hiragino Sans GB W3', arial, sans-serif;
+    font-size: 0.28rem; // 14px
+    line-height: 1; // 全局行高调整为1倍，简化布局。可能导致文字被遮挡(外部overflow:hidden时)
+    word-break: break-word; // 修改默认分词规则，解决长字符撑开容器的问题
+  }
+  
+  // 常见内容元素设置为1.5倍
+  p, blockquote, textarea, pre {
+    line-height: 1.5;
+  }
+  
+  a {
+    text-decoration: none;
+  }
