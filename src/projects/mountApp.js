@@ -23,12 +23,12 @@ import ElementUI, { Message } from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'normalize.css';
 import '../global/global.scss';
-import Api from '../services/api';
-
+import qkComponent from '../components';
 
 Vue.use(Vuex);
 Vue.use(Router);
 Vue.use(ElementUI);
+Vue.use(qkComponent);
 Vue.config.productionTip = false;
 
 export default async function mountApp(Component, optionsArg = {}) {
@@ -64,9 +64,8 @@ export default async function mountApp(Component, optionsArg = {}) {
     },
     ...options.router,
   });
-  Vue.prototype.$api = Api;
+  Vue.prototype.bus = new Vue();
   Window.$message = Message;
-  // console.log(Window.prototype);
 
   /**
    * 必须用户执行登录之后才可以访问

@@ -68,7 +68,7 @@ axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? '/api' : '/';
 // 设置默认请求头
 axios.defaults.headers = headerConf;
 axios.defaults.timeout = 10000;
-// const _this = Window;
+const _this = Window;
 let loading = null;
 
 function starteLoading() {
@@ -81,23 +81,30 @@ function starteLoading() {
 }
 
 function closeLoading() {
-  loading.close();
-  loading = null;
+  if (loading) {
+    loading.close();
+    loading = null;
+  }
 }
 
-const call = function (res, err, solve, rej) {
+const call = function (res, err, solve) {
   closeLoading();
   promiseArr = {};
   if (!err) {
-    solve(res);
+    if (res.code === '0') {
+      solve(res);
+    } else {
+      _this.$message.error(res.message);
+    }
   } else {
-    rej(err);
+    // rej(err);
+    _this.$message.error(err.toString());
   }
 };
 
 export default {
   // get请求
-  get(url, param) {
+  get(url, param = {}) {
     return new Promise((resolve, reject) => {
       axios({
         method: 'get',
@@ -107,6 +114,7 @@ export default {
           cancel = c;
         }),
       }).then((res, err) => {
+        res = res.data;
         call(res, err, resolve, reject);
       }).catch(err => {
         reject(err);
@@ -114,7 +122,7 @@ export default {
     });
   },
   // post请求
-  post(url, param, conf = {}) {
+  post(url, param = {}, conf = {}) {
     const params = {
       method: 'post',
       url,
@@ -132,10 +140,13 @@ export default {
     return new Promise((resolve, reject) => {
       starteLoading();
       axios(params).then((res, err) => {
-        call(res, err, resolve, reject);
+        if (res) {
+          res = res.data;
+          call(res, err, resolve, reject);
+        }
       }).catch(err => {
         closeLoading();
-        reject(err);
+        _this.$message.error(err.toString());
       });
     });
   },

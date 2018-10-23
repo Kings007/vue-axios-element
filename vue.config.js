@@ -7,6 +7,7 @@ const imageminSvgo = require('imagemin-svgo'); // eslint-disable-line
 
 const BASE_URL = 'sale-m'; // 部署路径
 const PAGE_PATH = 'src/projects'; // 页面目录路径
+const PAGE_ENTRY = require('./config');
 
 const multiPageConf = buildMultiPagesConf();
 
@@ -58,9 +59,12 @@ function buildMultiPagesConf() {
   const fs = require('fs');
 
   // 解析页面列表,并过滤空文件夹
-  const pageEntryList = fs.readdirSync(PAGE_PATH)
-    .filter(path => fs.statSync(`${PAGE_PATH}/${path}`).isDirectory());
-
+  let pageEntryList = fs.readdirSync(PAGE_PATH);
+  if (PAGE_ENTRY) {
+    pageEntryList = pageEntryList.filter(path => fs.statSync(`${PAGE_PATH}/${path}`).isDirectory() && path === PAGE_ENTRY);
+  } else {
+    pageEntryList = pageEntryList.filter(path => fs.statSync(`${PAGE_PATH}/${path}`).isDirectory());
+  }
   // 生成 `pages` 配置
   const pagesConf = pageEntryList.reduce((prevObj, pageEntry) => {
     prevObj[pageEntry] = {
